@@ -1,0 +1,4 @@
+[flake8]
+max-line-length = 127
+max-complexity = 4
+select = B,C,E,F,W,T4,B9

@@ -1,0 +1,30 @@
+{
+  "version": "2.0",
+  "app_name": "bobotinho",
+  "lambda_functions": {
+    "reset-daily": {
+      "autogen_policy": false,
+      "iam_policy_file": "iam-policy.json",
+      "manage_iam_role": false,
+      "iam_role_arn": "arn:aws:iam::137539109050:role/bobotinho-lambdas-role",
+      "lambda_memory_size": 128,
+      "lambda_timeout": 60,
+      "reserved_concurrency": 1
+    }
+  },
+  "environment_variables": {
+    "DB_NAME": "",
+    "DB_USER": "",
+    "DB_PASS": "",
+    "DB_HOST": "",
+    "DB_PORT": ""
+  },
+  "stages": {
+    "dev": {
+      "xray": false
+    },
+    "prod": {
+      "xray": true
+    }
+  }
+}

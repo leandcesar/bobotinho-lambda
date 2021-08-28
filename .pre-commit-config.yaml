@@ -1,0 +1,29 @@
+repos:
+  - repo: https://github.com/ambv/black
+    rev: 21.7b0
+    hooks:
+    - id: black
+      args: [--config, .toml]
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.9.2
+    hooks:
+    - id: flake8
+      args: [--config, .flake8]
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.9.3
+    hooks:
+    - id: isort
+      args: [-v]
+  - repo: https://github.com/econchick/interrogate
+    rev: 1.4.0  
+    hooks:
+    - id: interrogate
+      args: [-v, -c, ./.toml]
+  - repo: local
+    hooks:
+    - id: pytest
+      name: pytest
+      entry: pytest
+      language: system
+      pass_filenames: false
+      always_run: true
