@@ -40,25 +40,24 @@ class Database:
         if self.conn:
             self.conn.close()
 
-    def fetch(self, query: str) -> Optional[list]:
+    def fetch(self, query: str) -> list:
         """Execute query and return rows of a result set.
 
         Args:
             query (str): SQL query
 
         Returns:
-            Optional[list]: all the remaining rows of a query result set
+            list: all the remaining rows of a query result set
         """
         self.cur.execute(query)
         result: Optional[list] = self.cur.fetchall()
-        return result
+        return result or []
 
-    def execute(self, query: str, args: tuple = None) -> None:
+    def execute(self, query: str) -> None:
         """Execute query with bound variables and commit all changes to database.
 
         Args:
             query (str): SQL query
-            args (tuple, optional): bound variables. Defaults to None.
         """
-        self.cur.execute(query, args)
+        self.cur.execute(query)
         self.conn.commit()

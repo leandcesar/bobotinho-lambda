@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
+import json
 import os
 
 from aws_lambda_powertools import Logger, Tracer
 from chalice import Chalice, ConvertToMiddleware, Cron
 
-from database import Database
+from chalicelib import Database
 
-app = Chalice(app_name="bobotinho")
+app = Chalice(app_name="bobotinho", debug=os.environ.get("DEBUG"))
 
 logger = Logger(service=app.app_name)
 tracer = Tracer(service=app.app_name)
@@ -38,7 +39,9 @@ def reset_sponsors_daily(db: Database) -> None:
         db (Database): database instance
     """
     ids = db.fetch("SELECT id FROM public.user WHERE sponsor IS TRUE;")
-    db.execute("UPDATE public.cookie SET daily = 2 WHERE id IN %s", ids)
+    if ids:
+        ids = tuple(map(lambda x: x[0], ids))  # [(1,), (2,), ...] -> [1, 2, ...]
+        db.execute(f"UPDATE public.cookie SET daily = 2 WHERE id IN {ids}")
 
 
 @app.schedule(expression=Cron("0", "9", "*", "*", "?", "*"), name="reset-daily")
@@ -56,15 +59,12 @@ def reset_daily(event: dict, context: object = None) -> bool:
     try:
         logger.info("Initiating...")
         db.init()
-        logger.info("Updating 'daily' for users...")
         reset_users_daily(db)
-        logger.info("Updating 'daily' for sponsors...")
         reset_sponsors_daily(db)
-        logger.info("Updated!")
-        return True
+        return {"StatusCode": 200, "body": json.dumps({"FunctionError": "Unhandled"})}
     except Exception as e:
         logger.exception(e)
-        return False
+        return {"StatusCode": 500, "body": json.dumps({"FunctionError": str(e)})}
     finally:
         logger.info("Closing...")
         db.close()

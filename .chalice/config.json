@@ -8,7 +8,7 @@
       "manage_iam_role": false,
       "iam_role_arn": "arn:aws:iam::137539109050:role/bobotinho-lambdas-role",
       "lambda_memory_size": 128,
-      "lambda_timeout": 60,
+      "lambda_timeout": 10,
       "reserved_concurrency": 1
     }
   },
